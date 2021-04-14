@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- scan="true"    当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。 -->
+<!--  scanPeriod="30 seconds"   设置每30秒自动扫描,若没有指定具体单位则以milliseconds为标准(单位:milliseconds, seconds, minutes or hours)  -->
+<!-- debug="false"当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。-->
+<configuration scan="true" scanPeriod="30 seconds">
+    <!-- 载入外部配置文件 -->
+    <property resource="logback.properties"/>
+
+    <!-- LOG_LEVEL_PATTERN 日志级别 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %c : %m%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %c : %m%n"/>
+
+    <!-- 上下文名称  -->
+    <contextName>${APP_NAME}</contextName>
+
+    <!-- 日志的存放目录-->
+    <property name="DEBUG_LOG_FILE_NAME_PATTERN" value="${module.name}/${log.dir}/${app.name}-debug.%d{yyyy-MM-dd}.%i.log"/>
+    <property name="DEBUG_SQL_LOG_FILE_NAME_PATTERN" value="${module.name}/${log.dir}/${app.name}-sql-debug.%d{yyyy-MM-dd}.%i.log"/>
+    <property name="INFO_LOG_FILE_NAME_PATTERN" value="${module.name}/${log.dir}/${app.name}-info.%d{yyyy-MM-dd}.%i.log"/>
+    <property name="WARN_LOG_FILE_NAME_PATTERN" value="${module.name}/${log.dir}/${app.name}-warn.%d{yyyy-MM-dd}.%i.log"/>
+    <property name="ERROR_LOG_FILE_NAME_PATTERN" value="${module.name}/${log.dir}/${app.name}-error.%d{yyyy-MM-dd}.%i.log"/>
+
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>　　　　
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--输出到DEBUG文件-->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${DEBUG_LOG_FILE_NAME_PATTERN}</fileNamePattern>
+            <!-- 日志保留天数 -->
+            <maxHistory>${debug.file.max.history}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+            <totalSizeCap>${debug.file.total.size.cap}</totalSizeCap>
+            <!-- 每个日志文件的最大值 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${debug.file.max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!-- 此日志文件只记录debug级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--输出到SQL DEBUG文件-->
+    <appender name="DEBUG_SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${DEBUG_SQL_LOG_FILE_NAME_PATTERN}</fileNamePattern>
+            <!-- 日志保留天数 -->
+            <maxHistory>${debug.sql.file.max.history}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+            <totalSizeCap>${debug.sql.file.total.size.cap}</totalSizeCap>
+            <!-- 每个日志文件的最大值 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${debug.sql.file.max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!-- 此日志文件只记录debug级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--输出到INFO文件-->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${INFO_LOG_FILE_NAME_PATTERN}</fileNamePattern>
+            <!-- 日志保留天数 -->
+            <maxHistory>${info.file.max.history}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+            <totalSizeCap>${info.file.total.size.cap}</totalSizeCap>
+            <!-- 每个日志文件的最大值 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${info.file.max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!-- 此日志文件只记录info级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--输出到WARN文件-->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${WARN_LOG_FILE_NAME_PATTERN}</fileNamePattern>
+            <!-- 日志保留天数 -->
+            <maxHistory>${warn.file.max.history}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+            <totalSizeCap>${warn.file.total.size.cap}</totalSizeCap>
+            <!-- 每个日志文件的最大值 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${warn.file.max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!-- 此日志文件只记录warn级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--输出到ERROR文件-->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${ERROR_LOG_FILE_NAME_PATTERN}</fileNamePattern>
+            <!-- 日志保留天数 -->
+            <maxHistory>${error.file.max.history}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <!-- 日志文件上限大小，达到指定大小后删除旧的日志文件 -->
+            <totalSizeCap>${error.file.total.size.cap}</totalSizeCap>
+            <!-- 每个日志文件的最大值 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${error.file.max.file.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <!-- 此日志文件只记录error级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="DEBUG_FILE"/>
+    </appender>
+
+    <!-- #####根据不同的环境设置不同的日志输出级别##### -->
+    <!-- 未指定环境时使用，否则将其注释 -->
+    <logger name="com.silent.springcloud.dao" level="DEBUG" >
+        <appender-ref ref="DEBUG_SQL_FILE"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DEBUG_FILE"/>
+        <appender-ref ref="INFO_FILE"/>
+        <appender-ref ref="WARN_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+    <!-- 指定环境后使用，否则注释 springProfile 所有配置 -->
+    <!-- <springProfile name="default,local">
+        <logger name="com.sourceplan" level="debug"/>
+        <root level="debug">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev,test">
+        <logger name="com.sourceplan" level="debug"/>
+        <root level="debug">
+            <appender-ref ref="console"/>
+            <appender-ref ref="debug_file"/>
+            <appender-ref ref="info_file"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="pre,prod">
+        <logger name="com.sourceplan" level="info"/>
+        <root level="info">
+            <appender-ref ref="info_file"/>
+            <appender-ref ref="warn_file"/>
+            <appender-ref ref="error_file"/>
+        </root>
+    </springProfile> -->
+
+</configuration>
