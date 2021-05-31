@@ -28,4 +28,6 @@ public interface PaymentService {
 
     String paymentInfoTimeOut(Integer id);
 
+    String paymentCircuitBreaker(Integer id);
+
 }

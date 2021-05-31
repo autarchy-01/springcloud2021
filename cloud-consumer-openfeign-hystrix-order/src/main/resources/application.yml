@@ -9,7 +9,15 @@ spring:
 #开启Feign的hystrix，这样配置文件中的hystrix的配置才会生效，否则依然是默认的规则
 feign:
   hystrix:
-    enabled: false
+    enabled: true
+
+# 使用Hystrix Metrics Stream必备
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+
 #设置feign客户端超时时间(OpenFeign默认支持ribbon)
 ribbon:
   #指的是建立连接所用的时间，适用于网络状况正常的情况下,两端连接所用的时间

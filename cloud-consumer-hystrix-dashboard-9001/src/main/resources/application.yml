@@ -1,0 +1,36 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: CLOUD-SIMPLE-SERVICE
+
+hystrix:
+  dashboard:
+    proxy-stream-allow-list: "localhost"
+
+eureka:
+  instance:
+    instance-id: dashboard9001
+    #访问路径可以显示IP地址
+    prefer-ip-address: true
+    #Eureka客户端向服务端发送心跳的时间间隔,单位为秒(默认30s)
+    lease-renewal-interval-in-seconds: 30
+    #Eureka服务端在收到最后一次心跳后等待的时间上限,单位为秒(默认90s),超时将剔除服务
+    lease-expiration-duration-in-seconds: 90
+
+
+  client:
+    #表示是否将自己注册进EurekaServer默认为true。
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    service-url:
+      #单机版
+      #defaultZone: http://localhost:7001/eureka
+      # 集群版
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka,http://eureka7003.com:7003/eureka
+
+turbine:
+  appConfig: CLOUD-ORDER-SERVICE,CLOUD-PAYMENT-SERVICE  #turbine监控的服务，可以有多个
+  clusterNameExpression: new String("default")

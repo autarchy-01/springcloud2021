@@ -1,6 +1,8 @@
 package com.silent.springcloud.service.impl;
 
 import cn.hutool.core.util.IdUtil;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.silent.springcloud.dao.PaymentMapper;
 import com.silent.springcloud.entity.Payment;
 import com.silent.springcloud.service.PaymentService;
@@ -54,10 +56,13 @@ public class PaymentServiceImpl implements PaymentService {
         return "线程池： " + Thread.currentThread().getName() + "\t" + "paymentInfoOK(),id:" + id + "\t" + " \"O(∩_∩) 成功返回哈哈哈";
     }
 
+    @HystrixCommand(fallbackMethod = "paymentInfoTimeOutHandler", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
+    })
     @Override
     public String paymentInfoTimeOut(Integer id) {
         logger.info("第{}请求", COUNT.getAndIncrement());
-        int timeOutNumber = 3;
+        int timeOutNumber = 5;
         try {
             TimeUnit.SECONDS.sleep(timeOutNumber);
         } catch (InterruptedException e) {
@@ -70,6 +75,13 @@ public class PaymentServiceImpl implements PaymentService {
         return "线程池:  " + Thread.currentThread().getName() + "  8001系统繁忙或者运行报错，请稍后再试,id:  " + id + "\t" + "o(╥﹏╥)o";
     }
 
+    @HystrixCommand(fallbackMethod = "paymentCircuitBreakerFallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.enabled",value = "true"),
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold",value = "5"),
+            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds",value = "10000"),
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage",value = "60")
+    })
+    @Override
     public String paymentCircuitBreaker(Integer id) {
         if (id < 0) {
             throw new RuntimeException("******id 不能负数");

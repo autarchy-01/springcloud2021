@@ -1,13 +1,12 @@
 package com.silent.springcloud.service;
 
 import com.silent.springcloud.entity.Payment;
+import com.silent.springcloud.service.impl.PaymentServiceFallbackImpl;
 import com.silent.springcloud.vo.CommonResult;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -15,23 +14,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @version 1.0
  * @date 2021/2/22 12:10
  **/
-@Component
-@FeignClient(value = "cloud-payment-service")
-@RequestMapping("/payment")
+@FeignClient(value = "cloud-payment-service",fallback = PaymentServiceFallbackImpl.class)
 public interface PaymentService {
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/payment/get/{id}")
     CommonResult<Payment> getPaymentById(@PathVariable("id") Long id);
 
-    @PostMapping("/create")
+    @PostMapping("/payment/create")
     CommonResult<Integer> createPayment(Payment payment);
 
-    @GetMapping("/getDiscovery")
+    @GetMapping("/payment/getDiscovery")
     CommonResult<String> discovery();
 
-    @GetMapping("/getPaymentInfoOk/{id}")
+    @GetMapping("/payment/getPaymentInfoOk/{id}")
     CommonResult<String> paymentInfoOk(@PathVariable("id") Integer id);
 
-    @GetMapping("/getPaymentInfoTimeOut/{id}")
+    @GetMapping("/payment/getPaymentInfoTimeOut/{id}")
     CommonResult<String> paymentInfoTimeOut(@PathVariable("id") Integer id);
+
+    @GetMapping("/payment/paymentCircuitBreaker/{id}")
+    CommonResult<String> paymentCircuitBreaker(@PathVariable("id") Integer id);
 }

@@ -71,4 +71,9 @@ public class PaymentController {
     public CommonResult<String> paymentInfoTimeOut(@PathVariable("id") Integer id) {
         return new CommonResult<>(200, "查询服务信息成功,服务端口号是:" + port, paymentService.paymentInfoTimeOut(id));
     }
+
+    @GetMapping("/paymentCircuitBreaker/{id}")
+    public CommonResult<String> paymentCircuitBreaker(@PathVariable("id") Integer id) {
+        return new CommonResult<>(200, "查询服务信息成功,服务端口号是:" + port, paymentService.paymentCircuitBreaker(id));
+    }
 }
